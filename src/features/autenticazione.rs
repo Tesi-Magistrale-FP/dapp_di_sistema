@@ -7,14 +7,14 @@ use identity_iota::account::IdentitySetup;
 use identity_iota::account::Result;
 use identity_iota::client::ExplorerUrl;
 
-pub async fn registrazione(mut user_did_s: String, password: String) -> Result<bool>									// Registrazione dell'utente nell'ecosistema
+pub async fn registrazione(mut user_did_s: String, password: String) -> Result<bool>								// Registrazione dell'utente nell'ecosistema
 {
-    let mut esito = true;                                                                                 	// Esito dell'operazione di registrazione
+    let mut esito = true;                                                                                 			// Esito dell'operazione di registrazione
     
     println!("\n---------------------------------------");
     println!("\nREGISTRAZIONE NELL'ECOSISTEMA\n");
 
-    if user_did_s.len() == 0                                                                                            // Se l'identità deve essere creata
+    if user_did_s.len() == 0                                                                                     	// Se l'identità deve essere creata
     {
         // Crea l'identità decentralizzata
         let user: Account = Account::builder().create_identity(IdentitySetup::default()).await?;
@@ -30,7 +30,8 @@ pub async fn registrazione(mut user_did_s: String, password: String) -> Result<b
         let explorer: &ExplorerUrl = ExplorerUrl::mainnet();
         println!("- Documento DID disponibile al seguente link -> {}", explorer.resolver_url(user_did)?);
     }
-    else {
+    else 																											// Identità passata come parametro
+	{
         println!("- DID dell'utente {}", user_did_s);
     }
 
@@ -39,29 +40,51 @@ pub async fn registrazione(mut user_did_s: String, password: String) -> Result<b
     println!("- Password: {} | Hash password: {}", password.clone(), hash_pwd);
 
     // Esegue il comando della wasp-cli per eseguire la registrazione dell'utente sullo ISC Autenticazione
-    let output = Command::new("wasp-cli")
+    let mut output = Command::new("wasp-cli")
         .current_dir("C:\\Users\\fra-p\\Desktop\\Nodo_Wasp\\tools\\local-setup")
         .args(["chain", "post-request", "autenticazione", "registrazione", "String", "did", "String", &user_did_s, "String", "password", "String", &hash_pwd, "--chain=mychain", "-s"])
         .output()
         .unwrap();
 
     // Ottiene l'output del comando eseguito e lo elabora per capire l'esito della registrazione
-    let output_s: String = String::from_utf8(output.stdout).unwrap();
+    let mut output_s: String = String::from_utf8(output.stdout).unwrap();
 
-    if ! output_s.contains("Waiting for tx requests to be processed...") {
+    if ! output_s.contains("Waiting for tx requests to be processed...")                                            // Errore esecuzione comando per chiamare la funzione 
+    {
         println!("- Errore registrazione -> {output_s}");
         esito = false;
     }
-    else {
-        println!("- Registrazione eseguita!");
+    else                                                                                                          	// Chiamata alla funzione avvenuta con successo
+    {
+        // Recupera l'indirizzo della transazione usata per chiamare la funzione
+        let output_elab: String = output_s.replace("Waiting for tx requests to be processed...", "");
+        let ind_trans: String = String::from(output_elab.split_whitespace().last().unwrap().replace(")", ""));
+        
+        // Recupera l'evento generato dalla funzione per comprendere l'esito della registrazione
+        output = Command::new("wasp-cli")
+            .current_dir("C:\\Users\\fra-p\\Desktop\\Nodo_Wasp\\tools\\local-setup")
+            .args(["chain", "request", &ind_trans])
+            .output()
+            .unwrap();
+
+        output_s = String::from_utf8(output.stdout).unwrap();
+
+        if output_s.contains("autenticazione.registrazioneSuccesso")                                            	// Registrazione avvenuta con successo
+        {
+            println!("- Registrazione eseguita!");
+        }
+        else                                                                                            			// Registrazione non avvenuta
+        {
+            println!("- Registrazione non eseguita!");
+        }
     }
 
-    Ok(esito)																								// Restituisce l'esito dell'operazione
+    Ok(esito)																										// Restituisce l'esito dell'operazione
 }
 
 pub async fn login(user_did_s: String, password: String) -> Result<bool>											// Login dell'utente nell'ecosistema
 {
-    let mut esito = true;                                                                                 	// Esito dell'operazione di login
+    let mut esito = true;                                                                                 			// Esito dell'operazione di login
     
     println!("\n---------------------------------------");
     println!("\nLOGIN NELL'ECOSISTEMA\n");
@@ -104,12 +127,12 @@ pub async fn login(user_did_s: String, password: String) -> Result<bool>								
         println!("- Login eseguito!");
     }
 
-    Ok(esito)																								// Restituisce l'esito dell'operazione
+    Ok(esito)																										// Restituisce l'esito dell'operazione
 }
 
-pub async fn eliminazione(user_did_s: String, password: String) -> Result<bool>												// Eliminazione dell'utente dall'ecosistema
+pub async fn eliminazione(user_did_s: String, password: String) -> Result<bool>										// Eliminazione dell'utente dall'ecosistema
 {
-    let mut esito = true;                                                                                 	// Esito dell'operazione di eliminazione
+    let mut esito = true;                                                                                 			// Esito dell'operazione di eliminazione
     
     println!("\n---------------------------------------");
     println!("\nELIMINAZIONE DALL'ECOSISTEMA\n");
@@ -121,22 +144,44 @@ pub async fn eliminazione(user_did_s: String, password: String) -> Result<bool>	
     println!("- Password: {} | Hash password: {}", password.clone(), hash_pwd);
 
     // Esegue il comando della wasp-cli per eseguire l'eliminazione dell'utente sullo ISC Autenticazione
-    let output = Command::new("wasp-cli")
+    let mut output = Command::new("wasp-cli")
         .current_dir("C:\\Users\\fra-p\\Desktop\\Nodo_Wasp\\tools\\local-setup")
         .args(["chain", "post-request", "autenticazione", "eliminazione", "String", "did", "String", &user_did_s, "String", "password", "String", &hash_pwd, "--chain=mychain", "-s"])
         .output()
         .unwrap();
 
     // Ottiene l'output del comando eseguito e lo elabora per capire l'esito dell'eliminazione
-    let output_s: String = String::from_utf8(output.stdout).unwrap();
+    let mut output_s: String = String::from_utf8(output.stdout).unwrap();
 
-    if ! output_s.contains("Waiting for tx requests to be processed...") {
+    if ! output_s.contains("Waiting for tx requests to be processed...")                                            // Errore esecuzione comando per chiamare la funzione 
+    {
         println!("- Errore eliminazione -> {output_s}");
         esito = false;
     }
-    else {
-        println!("- Eliminazione eseguita!");
+    else                                                                                                          	// Chiamata alla funzione avvenuta con successo
+    {
+        // Recupera l'indirizzo della transazione usata per chiamare la funzione
+        let output_elab: String = output_s.replace("Waiting for tx requests to be processed...", "");
+        let ind_trans: String = String::from(output_elab.split_whitespace().last().unwrap().replace(")", ""));
+        
+        // Recupera l'evento generato dalla funzione per comprendere l'esito dell'eliminazione
+        output = Command::new("wasp-cli")
+            .current_dir("C:\\Users\\fra-p\\Desktop\\Nodo_Wasp\\tools\\local-setup")
+            .args(["chain", "request", &ind_trans])
+            .output()
+            .unwrap();
+
+        output_s = String::from_utf8(output.stdout).unwrap();
+
+        if output_s.contains("autenticazione.eliminazioneSuccesso")                                            		// Eliminazione avvenuta con successo
+        {
+            println!("- Eliminazione eseguita!");
+        }
+        else                                                                                            			// Eliminazione non avvenuta
+        {
+            println!("- Eliminazione non eseguita!");
+        }
     }
 
-    Ok(esito)																								// Restituisce l'esito dell'operazione
+    Ok(esito)																										// Restituisce l'esito dell'operazione
 }
