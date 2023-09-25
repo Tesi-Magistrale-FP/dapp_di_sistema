@@ -7,7 +7,8 @@ use identity_iota::account::IdentitySetup;
 use identity_iota::account::Result;
 use identity_iota::client::ExplorerUrl;
 
-pub async fn registrazione(mut user_did_s: String, password: String) -> Result<bool>								// Registrazione dell'utente nell'ecosistema
+// Registrazione dell'utente nell'ecosistema
+pub async fn registrazione(mut user_did_s: String, password: String) -> Result<bool>								
 {
     let mut esito = true;                                                                                 			// Esito dell'operazione di registrazione
     
@@ -76,13 +77,15 @@ pub async fn registrazione(mut user_did_s: String, password: String) -> Result<b
         else                                                                                            			// Registrazione non avvenuta
         {
             println!("- Registrazione non eseguita!");
+            esito = false;
         }
     }
 
     Ok(esito)																										// Restituisce l'esito dell'operazione
 }
 
-pub async fn login(user_did_s: String, password: String) -> Result<bool>											// Login dell'utente nell'ecosistema
+// Login dell'utente nell'ecosistema
+pub async fn login(user_did_s: String, password: String) -> Result<bool>											
 {
     let mut esito = true;                                                                                 			// Esito dell'operazione di login
     
@@ -113,7 +116,7 @@ pub async fn login(user_did_s: String, password: String) -> Result<bool>								
 
     let output_view = cmd_res.wait_with_output().unwrap();
 
-    // Ottiene l'output del comando eseguito e lo elabora per capire l'esito della registrazione
+    // Ottiene l'output del comando eseguito e lo elabora per capire l'esito del login
     let output_s: String = String::from_utf8(output_view.stdout).unwrap();
 
     if ! output_s.contains("true") && ! output_s.contains("false") {
@@ -122,6 +125,7 @@ pub async fn login(user_did_s: String, password: String) -> Result<bool>								
     }
     else if output_s.contains("false") {
         println!("- Login non eseguito!");
+        esito = false;
     }
     else if output_s.contains("true") {
         println!("- Login eseguito!");
@@ -130,7 +134,8 @@ pub async fn login(user_did_s: String, password: String) -> Result<bool>								
     Ok(esito)																										// Restituisce l'esito dell'operazione
 }
 
-pub async fn eliminazione(user_did_s: String, password: String) -> Result<bool>										// Eliminazione dell'utente dall'ecosistema
+// Eliminazione dell'utente dall'ecosistema
+pub async fn eliminazione(user_did_s: String, password: String) -> Result<bool>										
 {
     let mut esito = true;                                                                                 			// Esito dell'operazione di eliminazione
     
@@ -180,6 +185,7 @@ pub async fn eliminazione(user_did_s: String, password: String) -> Result<bool>	
         else                                                                                            			// Eliminazione non avvenuta
         {
             println!("- Eliminazione non eseguita!");
+            esito = false;
         }
     }
 
