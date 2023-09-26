@@ -13,6 +13,8 @@ La dApp di sistema è composta da diversi moduli Rust:
   - <strong>Registrazione:</strong> registra un utente nell'ecosistema.
   - <strong>Login:</strong> effettua il login di un utente nell'ecosistema.
   - <strong>Eliminazione:</strong> elimina l'account creato da un utente dell'ecosistema.
+  - <strong>Registra credenziali verificabili:</strong> registra le credenziali verificabili usate da un utente per un'applicazione.
+  - <strong>Verifica credenziali verificabili:</strong> verifica la correttezza delle credenziali verificabili di un utente.
 - [applicazioni.rs](https://github.com/Tesi-Magistrale-FP/dapp_di_sistema/blob/main/src/moduli/applicazioni.rs): gestisce le applicazioni decentralizzate:
   - <strong>Pubblica applicazione:</strong> pubblicazione di un'applicazione sullo store.
   - <strong>Modifica applicazione:</strong> modifica un'applicazione pubblicata.
@@ -30,8 +32,3 @@ La dApp di sistema è composta da diversi moduli Rust:
   - <strong>Fornisci autorizzazione:</strong> produttore fornisce l'autorizzazione a un consumatore per un'operazione sui dati di un'applicazione.
   - <strong>Rimuovi autorizzazione:</strong> produttore rimuove un'autorizzazione precedentemente concessa.
   - <strong>Elenco autorizzazioni:</strong> restituisce i dettagli delle autorizzazioni fornite da un produttore.
-- [canali.rs](https://github.com/Tesi-Magistrale-FP/dapp_di_sistema/blob/main/src/moduli/canali.rs): gestisce la creazione e l'accesso ai canali dati e log:
-  - <strong>Crea canali:</strong> autore crea i canali dati e log dedicati a un'operazione di un'applicazione.
-  - <strong>Ottieni autore:</strong> ottiene gli oggetti Author associati a un produttore.
-  - <strong>Ottieni iscritto:</strong> ottiene gli oggetti Subscriber associati a un consumatore.
-  - <strong>Aggiungi iscritto:</strong> aggiunge gli oggetti Subscriber associati a un consumatore.
